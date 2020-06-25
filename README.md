@@ -22,8 +22,10 @@ The script is run as follows:
 python fat-cigar_graph.py -h -xg json_file bam_in bam_out
 ```
 The script requires the JSON file containing the alignment information, the surjected BAM file and an output BAM file to be provided as input to run. The `xg` option can be specified to write the FAT-CIGAR string as the XG tag. The alignment scores will also be written to the AS tag in the output BAM file as default. 
+
 The JSON file can be obtained from the GAM file using:
 ```vg view -aj alignments.gam > output.json```
+
 The surjected BAM file can be obtained using the XG index of the graph and the GAM file:   
 ```vg surject -x index.xg -b alignments.gam > output.bam```
 
