@@ -37,9 +37,11 @@ The script should be run with the following commands:
 python fat-cigar.py linear -h -xg -g -cs input_bam output_bam
 ```
 
+
 **Default arguments:**
 
 When the script is run with just the required `input_bam` (input BAM file) and `output_bam` (output BAM file) arguments, without any optional arguments, the original CIGAR string present in the input BAM file will be replaced with the FAT-CIGAR string in the output BAM file.
+
 
 **Options:**
 
@@ -77,9 +79,11 @@ python fat-cigar.py -h -xg json_file bam_in bam_out
 
 At a minimum, the script requires as input the JSON file containing the alignment information, the surjected BAM file and an output BAM file. The default arguments replace an input (surjected) CIGAR string with an output (non-surjected) FAT-CIGAR string in the output BAM file. The alignment scores will also be written to the AS tag in the output BAM file as default.
 
+
 **Options:**
 
 The `xg` option can be specified to preserve the (surjected) CIGAR string and to write the (non-surjected) FAT-CIGAR string as the XG tag. 
+
 
 **Obtaining the vg input files:**
 
