@@ -1,28 +1,72 @@
 # FAT-CIGAR
 
-The FAT-CIGAR python scripts allows you to obtain an exact CIGAR string representation, also referred to as the FAT-CIGAR string, of the alignment of sequence reads against both linear and graph-based reference genomes without the masking of any bases.
+The FAT-CIGAR python script allows you to obtain exact CIGAR-like string representations of sequence read alignments against both linear and graph-based reference genomes, without the masking of any bases. We call these exact, extended representations FAT-CIGAR strings. Obtaining these strings is useful if you want to compare precisely how well a set of sequence reads map to both a linear and a graph reference. Scores are also given for each precise mapping, using the same penalty scheme. The input to the FAT-CIGAR script is a BAM file (see below for which read mappers provide suitable input) and, in the case of working with alignments from the vg toolkit, an additional JSON file. All output is again encoded within a BAM file, allowing for flexible downstream analysis. 
+
+
+## Works With
+The FAT-CIGAR script is able to work with alignments generated from the following three read mappers:
+BWA
+vg
+SevenBridges Graph Genome toolkit
+
+
+##Dependencies
+**Samtools**
+For alignments against a reference genome with BWA, the MD tag must also be present for all the reads within the BAM file by running the samtools calmd function prior to running the script as follows:
+```python
+samtools calmd aln.bam ref.fasta
+```
 
 ## Usage
 
-The linear FAT-CIGAR script (fat-cigar_linear.py) is mainly utilised to obtain FAT-CIGAR string for alignment information within BAM files output by both the BWA mapper and the SevenBridges Graph Genome toolkit, used to create variation graphs. The script requires Samtools to be installed in order to run. For alignments against the traditional linear reference genome with BWA, the MD tag must also be present for all the reads within the BAM file by running the `samtools calmd` function prior to running the script. 
+###BWA
+
+For alignments produced by the BWA mapper, the script must be run using the `linear` command. It takes an input BAM file with an MD tag present and outputs a BAM file containing the FAT-CIGAR string. As the script is reliant on BAM files that contain this MD tag, it must be used after running the samtools routine calmd as described in the Dependencies section above. 
 
 The script should be run with the following commands:
 ```python
-python fat-cigar_linear.py -h -xg -c -g -cs bam_file out_file
+python fat-cigar.py linear -h -xg -g -cs input_bam output_bam
 ```
-When the script is run as default with just the required `bam_file` (input BAM file) and `out_file` (output BAM file) arguments, without any optional arguments, the original CIGAR string will be overwritten with the FAT-CIGAR string in the output BAM file. The `xg` option can be used to write out the FAT-CIGAR string as the XG tag in the output BAM file in order to prevent the original CIGAR string being overwritten. The `g` option can be used to obtain the global alignment scores. As the alignment scores output by BWA are calculated using the local alignment during the Smith-Waterman extension phase instead of the final banded global alignment, it may not be reflective of the actual alignment. The true global alignment scores will be calculated from the FAT-CIGAR string, replacing the AS tag in the output BAM file. The short-form of the CS tag, which is another form of alignment representation used by the Minimap2 mapper, can also be obtained using the `cs` option. 
 
-Alignments output from the SevenBridges Graph Genome toolkit contain the surjected CIGAR string and the non-surject FAT-CIGAR string as the XG tag. A surjected alignment refers to alignments against a graph-based reference genome that is represented as if aligned against the linear reference genome whilst a non-surjected alignment refers to alignments against the graph itself. The `c` option allows you to obtain the non-surjected CIGAR string from the FAT-CIGAR string to be written to the output BAM file.  
+**Default arguments:**
+When the script is run with just the required `input_bam` (input BAM file) and `output_bam` (output BAM file) arguments, without any optional arguments, the original CIGAR string present in the input BAM file will be replaced with the FAT-CIGAR string in the output BAM file.
+
+**Options:**
+The `xg` option  preserves the original CIGAR string from the input BAM file while writing out the FAT-CIGAR string as the XG tag, thereby producing an output BAM file with both CIGAR and FAT-CIGAR strings. 
+
+The `g` option can be used to obtain the global alignment scores of the read mapping. As the alignment scores output by BWA are calculated using the local alignment during the Smith-Waterman extension phase instead of the final banded global alignment, it may not be reflective of the actual alignment. The true global alignment scores will be calculated from the FAT-CIGAR string, replacing the AS tag in the output BAM file. 
+
+The `cs` option is used to obtain the short-form of the CS string, a further alternative alignment representation as used by the Minimap2 mapper. 
+
+
+###SevenBridges Graph Genome Toolkit
+
+Graphical read mappers such as vg and the SevenBridges Graph Genome toolkit are capable of producing both surjected and non-surjected alignments of a read to a reference structure. A surjected alignment refers to an alignment against a graph-based reference genome that is represented as if it were aligned against the linear reference genome. Conversely, a non-surjected alignment refers to an alignment against the graph itself. Alignments output from the Graph Genome toolkit contain the surjected CIGAR string and the non-surjected FAT-CIGAR string as the XG tag. The `graph_sb` command should be used in order to generate the non-surjected CIGAR string from the FAT-CIGAR string. 
+
+The script should be run as follows:
+```python
+python fat-cigar.py graph_sb input_bam output_bam
+```
+
+The script requires both the `input_bam` (input BAM file) and `output_bam` (output BAM file) arguments which will replace the surjected CIGAR string with the non-surjected CIGAR string in the output BAM file. The FAT-CIGAR string may also be missing for reads that match exactly against the reference, therefore, the script also checks whether the XG tag is present and if not, writes the FAT-CIGAR string to the XG tag.  
   
 
-The graph FAT-CIGAR script (fat-cigar_graph.py) is used specifically to produce the FAT-CIGAR string for alignments against variation graphs from vg as the BAM files produced by vg (https://github.com/vgteam/vg) contains the surjected CIGAR string. 
+###vg Toolkit
+The `graph_sb` command should be used to produce FAT-CIGAR strings for alignments of sequence reads against variation graphs from the vg toolkit (https://github.com/vgteam/vg). BAM files produced by vg contain the surjected CIGAR string, with FAT-CIGAR output containing non-surjected FAT-CIGAR strings.
 
-The script is run as follows:     
+The script should be run as follows:     
 ```python
-python fat-cigar_graph.py -h -xg json_file bam_in bam_out
+python fat-cigar.py -h -xg json_file bam_in bam_out
 ```
-The script requires the JSON file containing the alignment information, the surjected BAM file and an output BAM file to be provided as input to run. The `xg` option can be specified to write the FAT-CIGAR string as the XG tag. The alignment scores will also be written to the AS tag in the output BAM file as default. 
-The JSON file can be obtained from the GAM file using:
+
+**Default arguments:**
+At a minimum, the script requires as input the JSON file containing the alignment information, the surjected BAM file and an output BAM file. The default arguments replace an input (surjected) CIGAR string with an output (non-surjected) FAT-CIGAR string in the output BAM file. The alignment scores will also be written to the AS tag in the output BAM file as default.
+
+**Options:**
+The `xg` option can be specified to preserve the (surjected) CIGAR string and to write the (non-surjected) FAT-CIGAR string as the XG tag. 
+
+**Obtaining the vg input files:**
+The JSON file can be obtained from the vg GAM file using:
 ```vg view -aj alignments.gam > output.json```
 The surjected BAM file can be obtained using the XG index of the graph and the GAM file:   
 ```vg surject -x index.xg -b alignments.gam > output.bam```
