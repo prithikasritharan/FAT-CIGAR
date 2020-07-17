@@ -1,16 +1,19 @@
 # FAT-CIGAR
 
-The FAT-CIGAR python script allows you to obtain exact CIGAR-like string representations of sequence read alignments against both linear and graph-based reference genomes, without the masking of any bases. We call these exact, extended representations FAT-CIGAR strings. Obtaining these strings is useful if you want to compare precisely how well a set of sequence reads map to both a linear and a graph reference. Scores are also given for each precise mapping, using the same penalty scheme. The input to the FAT-CIGAR script is a BAM file (see below for which read mappers provide suitable input) and, in the case of working with alignments from the vg toolkit, an additional JSON file. All output is again encoded within a BAM file, allowing for flexible downstream analysis. 
+The FAT-CIGAR python script allows you to obtain exact CIGAR-like string representations of sequence read alignments against both linear and graph-based reference genomes, without the masking of any bases. We call these exact, extended representations FAT-CIGAR strings. Obtaining these strings is useful if you want to compare precisely how well a set of sequence reads map to both a linear and a graph reference. Scores are also given for each precise mapping, using the same penalty scheme. The input to the FAT-CIGAR script is a BAM file (see below for which read mappers provide suitable input) and, in the case of working with alignments from the vg toolkit, an additional JSON file. All output is again encoded within a BAM file, allowing for flexible downstream analysis.   
+&nbsp;
 
+&nbsp;
 
 
 ## Works With
 The FAT-CIGAR script is able to work with alignments generated from the following three read mappers:
-BWA
-vg
-SevenBridges Graph Genome toolkit
+* BWA
+* vg
+* SevenBridges Graph Genome toolkit
+&nbsp;
 
-
+&nbsp;
 
 
 ## Dependencies
@@ -20,6 +23,8 @@ For alignments against a reference genome with BWA, the MD tag must also be pres
 ```python
 samtools calmd aln.bam ref.fasta
 ```
+&nbsp;
+
 
 ## Usage
 
@@ -44,6 +49,7 @@ The `g` option can be used to obtain the global alignment scores of the read map
 
 The `cs` option is used to obtain the short-form of the CS string, a further alternative alignment representation as used by the Minimap2 mapper. 
 
+&nbsp;
 
 ### SevenBridges Graph Genome Toolkit
 
@@ -54,8 +60,9 @@ The script should be run as follows:
 python fat-cigar.py graph_sb input_bam output_bam
 ```
 
-The script requires both the `input_bam` (input BAM file) and `output_bam` (output BAM file) arguments which will replace the surjected CIGAR string with the non-surjected CIGAR string in the output BAM file. The FAT-CIGAR string may also be missing for reads that match exactly against the reference, therefore, the script also checks whether the XG tag is present and if not, writes the FAT-CIGAR string to the XG tag.  
-  
+The script requires both the `input_bam` (input BAM file) and `output_bam` (output BAM file) arguments which will replace the surjected CIGAR string with the non-surjected CIGAR string in the output BAM file. The FAT-CIGAR string may also be missing for reads that match exactly against the reference, therefore, the script also checks whether the XG tag is present and if not, writes the FAT-CIGAR string to the XG tag. 
+
+&nbsp;  
 
 ### vg Toolkit
 The `graph_sb` command should be used to produce FAT-CIGAR strings for alignments of sequence reads against variation graphs from the vg toolkit (https://github.com/vgteam/vg). BAM files produced by vg contain the surjected CIGAR string, with FAT-CIGAR output containing non-surjected FAT-CIGAR strings.
