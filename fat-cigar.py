@@ -393,7 +393,7 @@ def main():
 
 
     #VG toolkit
-    if (args.mode == "graph_vg"):
+    if (args.commands == "graph_vg"):
         #size of hash table
         SIZE = 2**24 
 
@@ -418,7 +418,7 @@ def main():
 
 
     #SevenBridges Graph Genome toolkit
-    if (args.mode == "graph_sb"):
+    if (args.commands == "graph_sb"):
         for read in bam.fetch():
             if not read.is_unmapped:
                 try:
@@ -431,7 +431,7 @@ def main():
 
 
     #BWA
-    if (args.mode == "linear"):
+    if (args.commands == "linear"):
         for read in bam.fetch():
             if not read.is_unmapped:
                 cigar = read.cigarstring
@@ -526,7 +526,7 @@ if __name__ == '__main__':
     #Instantiate the parser
     parser = argparse.ArgumentParser(description='Produces the FAT-CIGAR string for BAM files containing read alignments against a variation graph')
 
-    subparsers = parser.add_subparsers(help='commands', dest='commands')
+    subparsers = parser.add_subparsers(help='COMMANDS', dest='commands')
 
     #Parser for working with vg
     vg_parser = subparsers.add_parser('graph_vg', help='Generates the FAT-CIGAR string for output from the vg toolkit')
