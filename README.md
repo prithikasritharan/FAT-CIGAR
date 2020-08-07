@@ -24,6 +24,7 @@ The FAT-CIGAR script is able to work with alignments generated from the followin
 * **[VG](https://github.com/vgteam/vg "VG")**
 
 * **[SevenBridges Graph Genome Toolkit](https://www.sevenbridges.com/graph-genome-academic-release/ "SevenBridges")**
+
 &nbsp;
 
 
