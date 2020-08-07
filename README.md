@@ -17,9 +17,7 @@ The FAT-CIGAR script is able to work with alignments generated from the followin
 
 
 ## Dependencies
-* **[Samtools](https://github.com/samtools/samtools "Samtools")**
-
-Samtools is required both for the processing of BAM files and to generate the read MD tag for alignments from BWA.
+* **[Samtools](https://github.com/samtools/samtools "Samtools")**: required both for the processing of BAM files and to generate the read MD tag for alignments from BWA.
 
 * **[BWA](https://github.com/lh3/bwa "BWA")**
 
@@ -33,7 +31,7 @@ Samtools is required both for the processing of BAM files and to generate the re
 
 ### BWA
 
-For alignments produced by the BWA mapper, the script must be run using the `linear` command. It takes an input BAM file with an MD tag present and outputs a BAM file containing the FAT-CIGAR string. As the script is reliant on BAM files that contain this MD tag, it must be used after running the samtools routine calmd as described in the Dependencies section above. 
+For alignments produced by the BWA mapper, the script must be run using the `linear` command. It takes an input BAM file with an MD tag present and outputs a BAM file containing the FAT-CIGAR string. As the script is reliant on BAM files that contain this MD tag, it must be used after running `samtools calmd` as described in the Tutorial section below. 
 
 The script should be run with the following commands:
 ```python
@@ -125,4 +123,9 @@ Once the required input files have been obtained, the script can be run as follo
 ```python
 python fat-cigar.py graph_vg -xg test_vg.json test_vg.bam test_vg_fat-cigar.bam
 ```
-     
+
+
+
+
+
+
